@@ -25,7 +25,7 @@ func (d *DeletedFlagAtomic) Deleted() bool { return d.deleted.Load() }
 
 type SliceIter[E Entity] []E
 
-func Slice[E Entity](s []E) *SliceIter[E] { return (*SliceIter[E])(&s) }
+func Slice[E Entity](s *[]E) *SliceIter[E] { return (*SliceIter[E])(s) }
 
 func (s *SliceIter[E]) SweepAll(yield func(int, E) bool) bool {
 	cont := true

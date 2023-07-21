@@ -51,7 +51,7 @@ func Example() {
 		newFoo()
 
 		// mover system
-		ecs.Slice(movers).SweepAll(func(_ int, m mover) bool {
+		ecs.Slice(&movers).SweepAll(func(_ int, m mover) bool {
 			m.move()
 			x, _ := m.getPos()
 			if x > screenWidth {
@@ -64,7 +64,7 @@ func Example() {
 		// for _, m := range ecs.Slice(movers).SweepAll { m.move(); ... }
 
 		// drawer system
-		ecs.Slice(drawers).SweepAll(func(_ int, d drawer) bool {
+		ecs.Slice(&drawers).SweepAll(func(_ int, d drawer) bool {
 			d.draw()
 			return true
 		})
