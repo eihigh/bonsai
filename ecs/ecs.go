@@ -23,11 +23,11 @@ func (d *DeletedFlagAtomic) Delete() { d.deleted.Store(true) }
 
 func (d *DeletedFlagAtomic) Deleted() bool { return d.deleted.Load() }
 
-type slice[E Entity] []E
+type SliceIter[E Entity] []E
 
-func Slice[E Entity](s []E) *slice[E] { return &s }
+func Slice[E Entity](s []E) *SliceIter[E] { return (*SliceIter[E])(&s) }
 
-func (s *slice[E]) SweepAll(yield func(int, E) bool) bool {
+func (s *SliceIter[E]) SweepAll(yield func(int, E) bool) bool {
 	cont := true
 	j := 0
 	for i, x := range *s {
@@ -43,11 +43,11 @@ func (s *slice[E]) SweepAll(yield func(int, E) bool) bool {
 	return true
 }
 
-type map_[K comparable, V Entity] map[K]V
+type MapIter[K comparable, V Entity] map[K]V
 
-func Map[K comparable, V Entity](m map[K]V) map_[K, V] { return m }
+func Map[K comparable, V Entity](m map[K]V) MapIter[K, V] { return m }
 
-func (m map_[K, V]) SweepAll(yield func(K, V) bool) bool {
+func (m MapIter[K, V]) SweepAll(yield func(K, V) bool) bool {
 	cont := true
 	for k, v := range m {
 		if v.Deleted() {
