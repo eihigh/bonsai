@@ -38,10 +38,10 @@ func All4[T ~float64](v T) Vec4 { return Vec4{Scalar(v), Scalar(v), Scalar(v), S
 // Conversions
 // ========================================
 
-func (a Scalar) Float64() float64          { return float64(a) }
-func (a Vec2) Float64s() (x, y float64)    { return float64(a.X), float64(a.Y) }
-func (a Vec3) Float64s() (x, y, z float64) { return float64(a.X), float64(a.Y), float64(a.Z) }
-func (a Vec4) Float64s() (x, y, z, w float64) {
+func (a Scalar) Float64() float64     { return float64(a) }
+func (a Vec2) Xy() (x, y float64)     { return float64(a.X), float64(a.Y) }
+func (a Vec3) Xyz() (x, y, z float64) { return float64(a.X), float64(a.Y), float64(a.Z) }
+func (a Vec4) Xyzw() (x, y, z, w float64) {
 	return float64(a.X), float64(a.Y), float64(a.Z), float64(a.W)
 }
 
@@ -419,6 +419,8 @@ func (a Vec3) Cross(b Vec3) Vec3 {
 }
 
 func (a Vec2) Reflect(n Vec2) Vec2 { return a.Sub(n.MulAll(2 * a.Dot(n))) }
+func (a Vec3) Reflect(n Vec3) Vec3 { return a.Sub(n.MulAll(2 * a.Dot(n))) }
+func (a Vec4) Reflect(n Vec4) Vec4 { return a.Sub(n.MulAll(2 * a.Dot(n))) }
 
 // ========================================
 // Misc
@@ -428,11 +430,32 @@ func (a Vec2) LengthSq() Scalar { return a.X*a.X + a.Y*a.Y }
 func (a Vec3) LengthSq() Scalar { return a.X*a.X + a.Y*a.Y + a.Z*a.Z }
 func (a Vec4) LengthSq() Scalar { return a.X*a.X + a.Y*a.Y + a.Z*a.Z + a.W*a.W }
 
-func (a Vec2) Polar() (r, theta Scalar) {
-	return a.Length(), a.Y.Atan2(a.X)
+func (a Vec2) Polar() Vec2 { return Xy(a.Length(), a.Y.Atan2(a.X)) }
+
+func (a Vec2) Rect() Vec2 {
+	s, c := math.Sincos(float64(a.Y))
+	return Xy(a.X*Scalar(c), a.X*Scalar(s))
 }
 
-func (a Vec2) Rect() (x, y Scalar) {
-	s, c := math.Sincos(float64(a.Y))
-	return a.X * Scalar(c), a.X * Scalar(s)
+func (a Scalar) Remap(inMin, inMax, outMin, outMax Scalar) Scalar {
+	return outMin + (a-inMin)*(outMax-outMin)/(inMax-inMin)
+}
+func (a Vec2) Remap(inMin, inMax, outMin, outMax Vec2) Vec2 {
+	return Vec2{a.X.Remap(inMin.X, inMax.X, outMin.X, outMax.X), a.Y.Remap(inMin.Y, inMax.Y, outMin.Y, outMax.Y)}
+}
+func (a Vec3) Remap(inMin, inMax, outMin, outMax Vec3) Vec3 {
+	return Vec3{a.X.Remap(inMin.X, inMax.X, outMin.X, outMax.X), a.Y.Remap(inMin.Y, inMax.Y, outMin.Y, outMax.Y), a.Z.Remap(inMin.Z, inMax.Z, outMin.Z, outMax.Z)}
+}
+func (a Vec4) Remap(inMin, inMax, outMin, outMax Vec4) Vec4 {
+	return Vec4{a.X.Remap(inMin.X, inMax.X, outMin.X, outMax.X), a.Y.Remap(inMin.Y, inMax.Y, outMin.Y, outMax.Y), a.Z.Remap(inMin.Z, inMax.Z, outMin.Z, outMax.Z), a.W.Remap(inMin.W, inMax.W, outMin.W, outMax.W)}
+}
+
+func (a Vec2) RemapAll(inMin, inMax, outMin, outMax Scalar) Vec2 {
+	return Vec2{a.X.Remap(inMin, inMax, outMin, outMax), a.Y.Remap(inMin, inMax, outMin, outMax)}
+}
+func (a Vec3) RemapAll(inMin, inMax, outMin, outMax Scalar) Vec3 {
+	return Vec3{a.X.Remap(inMin, inMax, outMin, outMax), a.Y.Remap(inMin, inMax, outMin, outMax), a.Z.Remap(inMin, inMax, outMin, outMax)}
+}
+func (a Vec4) RemapAll(inMin, inMax, outMin, outMax Scalar) Vec4 {
+	return Vec4{a.X.Remap(inMin, inMax, outMin, outMax), a.Y.Remap(inMin, inMax, outMin, outMax), a.Z.Remap(inMin, inMax, outMin, outMax), a.W.Remap(inMin, inMax, outMin, outMax)}
 }

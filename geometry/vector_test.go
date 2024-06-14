@@ -83,6 +83,7 @@ func Example() {
 	}
 
 	col = col.Scale(src.X.Mod(2).Sub(1).Mul(2).Clamp(0, 1)*-0.25 + 1)
+	// col = col.Scale(src.X.Mod(2).Remap(0, 2, 1, 0.75))
 
 	// GLSLに親しんだ人が、converted codeを読んで驚く点：
 	// 1. ほとんどの演算子がメソッドに置き換えられている
