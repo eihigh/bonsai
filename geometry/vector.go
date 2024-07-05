@@ -63,6 +63,9 @@ func (a Vec2) Vec4(z, w Scalar) Vec4 { return Vec4{a.X, a.Y, z, w} }
 func (a Vec3) Vec2() Vec2         { return Vec2{a.X, a.Y} }
 func (a Vec3) Vec4(w Scalar) Vec4 { return Vec4{a.X, a.Y, a.Z, w} }
 
+func (a Vec4) Vec2() Vec2 { return Vec2{a.X, a.Y} }
+func (a Vec4) Vec3() Vec3 { return Vec3{a.X, a.Y, a.Z} }
+
 func (a Scalar) Array() [1]Scalar { return [1]Scalar{a} }
 func (a Vec2) Array() [2]Scalar   { return [2]Scalar{a.X, a.Y} }
 func (a Vec3) Array() [3]Scalar   { return [3]Scalar{a.X, a.Y, a.Z} }
@@ -459,3 +462,8 @@ func (a Vec3) RemapAll(inMin, inMax, outMin, outMax Scalar) Vec3 {
 func (a Vec4) RemapAll(inMin, inMax, outMin, outMax Scalar) Vec4 {
 	return Vec4{a.X.Remap(inMin, inMax, outMin, outMax), a.Y.Remap(inMin, inMax, outMin, outMax), a.Z.Remap(inMin, inMax, outMin, outMax), a.W.Remap(inMin, inMax, outMin, outMax)}
 }
+
+func (a Scalar) OneMinus() Scalar { return 1 - a }
+func (a Vec2) OneMinus() Vec2     { return Vec2{1 - a.X, 1 - a.Y} }
+func (a Vec3) OneMinus() Vec3     { return Vec3{1 - a.X, 1 - a.Y, 1 - a.Z} }
+func (a Vec4) OneMinus() Vec4     { return Vec4{1 - a.X, 1 - a.Y, 1 - a.Z, 1 - a.W} }
